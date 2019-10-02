@@ -9,6 +9,7 @@ import Data.List
 import qualified Data.ByteString.Char8 as B8
 import Control.Lens
 import Control.Monad
+import System.Environment
 
 
 import Network.SSH.Client.SimpleSSH
@@ -16,7 +17,8 @@ import Network.SSH.Client.SimpleSSH
 main :: IO ()
 main =  let hints = defaultHints { addrFlags = [AI_NUMERICHOST, AI_NUMERICSERV], addrSocketType = Stream }
         in do
-                addr:_ <- getAddrInfo (Just hints) (Just "127.0.0.1") (Just "8022")
+                (h1:(p1:_)) <- getArgs
+                addr:_ <- getAddrInfo (Just hints) (Just h1) (Just p1)
                 sock <- socket (addrFamily addr) (addrSocketType addr) (addrProtocol addr)
                 Network.Socket.connect sock (addrAddress addr)
                 name <- getSocketName sock
