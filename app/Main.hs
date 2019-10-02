@@ -32,14 +32,15 @@ main =  let hints = defaultHints { addrFlags = [AI_NUMERICHOST, AI_NUMERICSERV],
 send2 :: Socket -> B8.ByteString -> IO Int
 send2 sock msg = do
     (h, p) <- getPeerName sock >>= (pure . ( _2 %~ (drop 1) ) . (span ( /= ':')) . show)
+    (h1:(p1:(k1:(l1:(ps1:(c1:_)))))) <- getArgs
     rs <- runSimpleSSH $ 
             withSessionPassword 
-                "localhost" 
-                8022
-                "/home/petr/" 
-                "root" 
-                "root" 
-                (flip execCommand (B8.unpack msg))
+                h
+                (read p)
+                k1
+                l1 
+                p1
+                (flip execCommand c1)
     print rs
     pure 0
 
